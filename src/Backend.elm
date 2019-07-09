@@ -4,6 +4,11 @@ import Types exposing(Song)
 import Utils exposing (..)
 import Models exposing (Model)
 
+import List exposing (filter, head)
+import String exposing (contains, toUpper)
+
+
+
 -- Existe la funcion findSong que recibe
 -- una condicion y una lista de canciones
 -- findSong : (Song -> Bool) -> List Song -> Song
@@ -20,22 +25,40 @@ import Models exposing (Model)
 
 -- Debería darnos la url de la cancion en base al id
 urlById : String -> List Song -> String
-urlById id songs = ""
+urlById id songs = (encontrarPorId id songs).url
+
+encontrarPorId : String -> List Song -> Song
+encontrarPorId id = findSong (porId id) 
+
+porId : String -> Song -> Bool
+porId unId song = song.id == unId
 
 -- Debería darnos las canciones que tengan ese texto en nombre o artista
 filterByName : String -> List Song -> List Song
-filterByName text songs = songs
+filterByName text = filter (estaEnElNombreOArtista text)
+
+estaEnElNombreOArtista : String -> Song -> Bool
+estaEnElNombreOArtista texto song = ((||) (loContiene texto song.artist) << loContiene texto) song.name
+
+loContiene : String -> String -> Bool
+loContiene texto lugar = (contains (toUpper texto) << toUpper) lugar
 
 -- Recibe un id y tiene que likear/dislikear una cancion
 -- switchear song.liked
 toggleLike : String -> List Song -> List Song
 toggleLike id songs = songs
 
+likear : Song -> Song
+likear song = { song | liked = True }
+
+dislikear : Song -> Song
+dislikear song = { song | liked = False }
+
 -- Esta funcion tiene que decir si una cancion tiene
 -- nuestro like o no, por ahora funciona mal...
 -- hay que arreglarla
 isLiked : Song  -> Bool
-isLiked song = False
+isLiked song = song.liked
 
 -- Recibe una lista de canciones y nos quedamos solo con las que
 -- tienen un like
