@@ -33,6 +33,9 @@ encontrarPorId id = findSong (esSuId id)
 esSuId : String -> Song -> Bool
 esSuId unId song = song.id == unId
 
+noEsSuId : String -> Song -> Bool
+noEsSuId unId song = song.id /= unId
+
 -- Debería darnos las canciones que tengan ese texto en nombre o artista
 filterByName : String -> List Song -> List Song
 filterByName text = filter (estaEnElNombreOArtista text)
@@ -75,12 +78,12 @@ filterLiked = filter (isLiked)
 -- Agrega una cancion a la cola de reproduccion
 -- (NO es necesario preocuparse porque este una sola vez)
 addSongToQueue : Song -> List Song -> List Song
-addSongToQueue song queue = queue
+addSongToQueue song queue = append queue [song]
 
 -- Saca una cancion de la cola
 -- (NO es necesario que se elimine una sola vez si esta repetida)
 removeSongFromQueue : String -> List Song -> List Song
-removeSongFromQueue id queue = queue
+removeSongFromQueue id = filter (noEsSuId id)
 
 -- Hace que se reproduzca la canción que sigue y la saca de la cola
 playNextFromQueue : Model -> Model
