@@ -4,10 +4,8 @@ import Types exposing(Song)
 import Utils exposing (..)
 import Models exposing (Model)
 
-import List exposing (filter, head, append, map)
+import List exposing (filter, map, append)
 import String exposing (contains, toUpper)
-
-
 
 -- Existe la funcion findSong que recibe
 -- una condicion y una lista de canciones
@@ -87,7 +85,10 @@ removeSongFromQueue id = filter (noEsSuId id)
 
 -- Hace que se reproduzca la canción que sigue y la saca de la cola
 playNextFromQueue : Model -> Model
-playNextFromQueue model = model
+playNextFromQueue model = (playSong (removeHeadFromQueue model) << idFirst) model.queue
+
+removeHeadFromQueue : Model -> Model
+removeHeadFromQueue model = { model | queue = tailSafe model.queue }
 
 -------- Funciones Listas --------
 
