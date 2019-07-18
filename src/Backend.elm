@@ -4,7 +4,7 @@ import Types exposing(Song)
 import Utils exposing (..)
 import Models exposing (Model)
 
-import List exposing (filter, head)
+import List exposing (filter, head, append, map)
 import String exposing (contains, toUpper)
 
 
@@ -28,10 +28,10 @@ urlById : String -> List Song -> String
 urlById id songs = (encontrarPorId id songs).url
 
 encontrarPorId : String -> List Song -> Song
-encontrarPorId id = findSong (porId id) 
+encontrarPorId id = findSong (esSuId id) 
 
-porId : String -> Song -> Bool
-porId unId song = song.id == unId
+esSuId : String -> Song -> Bool
+esSuId unId song = song.id == unId
 
 -- Debería darnos las canciones que tengan ese texto en nombre o artista
 filterByName : String -> List Song -> List Song
@@ -45,8 +45,15 @@ loContiene texto lugar = (contains (toUpper texto) << toUpper) lugar
 
 -- Recibe un id y tiene que likear/dislikear una cancion
 -- switchear song.liked
+
 toggleLike : String -> List Song -> List Song
-toggleLike id songs = songs
+toggleLike id songs = map (switchearLikeSiEsSuId id) songs
+
+switchearLikeSiEsSuId : String -> Song -> Song
+switchearLikeSiEsSuId id song = if esSuId id song then switchearLike song else song
+
+switchearLike : Song -> Song
+switchearLike song = if song.liked then dislikear song else likear song
 
 likear : Song -> Song
 likear song = { song | liked = True }
@@ -63,7 +70,7 @@ isLiked song = song.liked
 -- Recibe una lista de canciones y nos quedamos solo con las que
 -- tienen un like
 filterLiked : List Song -> List Song
-filterLiked songs = songs
+filterLiked = filter (isLiked)
 
 -- Agrega una cancion a la cola de reproduccion
 -- (NO es necesario preocuparse porque este una sola vez)
